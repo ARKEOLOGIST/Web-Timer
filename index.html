@@ -1,0 +1,113 @@
+<html>
+
+<body>
+    <div style="width: 400px; margin: 0 auto;">
+    <p><h1>Privado Timer</h1></p>
+    <div id="set" style="font-size: 30px;"><div><label style="width: 150px; display: inline-block;">Minutes:</label><input type="number" value="5" id="valid1" onchange="validation(event)"></div><div><label style="width: 150px; display: inline-block;">Seconds:</label><input type="number" value="0" id="valid2" onchange="validation(event)"></div></div>
+  <div id="time" style="font-size: 30px; display: none;">Time left = <span id="timer"><span id="minute" style="padding: 0 5px;"></span>:<span id="second" style="padding: 0 5px;"></span></div>
+  <input id="but" type="button" value="Start" style="width: 100px;margin-top: 25px;cursor: pointer;" onclick="change()">
+</div>
+<script>
+var t;                                                         //making all variables (especially t, the variable used for handling the setInterval() and clearInterval() functions) global to make them more accessible
+var doc = document.getElementById("but");
+var minute = document.getElementById("minute");
+var second = document.getElementById("second");
+var time = document.getElementById("time");
+var set = document.getElementById("set");
+var valid1 = document.getElementById("valid1");
+var valid2 = document.getElementById("valid2");
+function change()
+{
+  if (doc.value == "Start")
+  {
+    time.style.display = "block";
+    set.style.display = "none";                                   //removing the option for adjusting the maximum value for the timer when timer is started
+    doc.value = "Pause";
+    minute.innerHTML = valid1.value;
+    second.innerHTML = valid2.value;
+    t = setInterval(() => {
+    if (second.innerHTML == 0 && minute.innerHTML == 0)
+    {
+      doc.value = "Reset";
+      clearInterval(t);
+    }
+    else
+    {
+    if (second.innerHTML == 0)
+    {
+      second.innerHTML = 59;
+      minute.innerHTML--;
+    }
+    else 
+    {
+      second.innerHTML--;
+      console.log(t);
+    }
+    }
+  },1000);
+  }
+  else if (doc.value == "Reset")
+  {     
+    doc.value = "Start";                                               
+    time.style.display = "none";                                        //timer is over, return the original inputs for counter and remove the timer from display
+    set.style.display = "block";
+  }
+  else if (doc.value == "Pause")
+  {
+    doc.value = "Resume";
+    clearInterval(t);
+  }
+  else if (doc.value == "Resume")
+  {
+    doc.value="Pause";
+    if (second.innerHTML == 0 && minute.innerHTML == 0)                 //there seems to be an additional delay on attaching the setInterval() function in the "Resume" button call, adjusting as necessary
+    {
+      doc.value = "Reset";                                                  //if counting is over, reset button should appear
+      clearInterval(t);
+    }
+    else
+    {
+    if (second.innerHTML == 0)                                             //if seconds counter hits zero, minutes counter should be decremented by one and seconds counter should start from fifty-nine
+    {
+      second.innerHTML = 59;                                              
+      minute.innerHTML--;
+    }
+    else 
+    {
+      second.innerHTML--;
+    }
+    t = setInterval(() => {                                                //reattach the setInterval() function to t to resume counting
+    if (second.innerHTML == 0 && minute.innerHTML == 0)
+    {
+      doc.value = "Reset";
+      clearInterval(t);
+    }
+    else
+    {
+    if (second.innerHTML == 0)
+    {
+      second.innerHTML = 59;
+      minute.innerHTML--;
+    }
+    else 
+    {
+      second.innerHTML--;
+    }
+    }
+  },1000);
+  }
+}
+}
+
+function validation(e)                                                //minor validation check to ensure invalid values aren't inserted in the minutes and seconds fields
+{
+if (e.target.value > 59)
+{
+    e.target.value = 0;
+}
+}
+</script>
+
+</body>
+
+</html>
